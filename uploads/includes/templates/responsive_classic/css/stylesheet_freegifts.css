@@ -1,0 +1,12 @@
+.freegifts ul {
+	list-style-type: none;
+}
+
+.freegifts .and {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.freegifts .conditions {
+	font-style: italic;
+}
