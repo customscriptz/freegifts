@@ -23,8 +23,12 @@ CREATE TABLE IF NOT EXISTS " . TABLE_FREEGIFTS . " (
 ");
 
 /* Run update routine */
-if ($_GET['action'] == 'updateDB') {
-    $checkfields = $db->metaColumns(TABLE_FREEGIFTS);
+$checkfields = $db->metaColumns(TABLE_FREEGIFTS);
+if (!$checkfields['FREEGIFTS_ATTRIBUTES']->type 
+    || !$checkfields['FREEGIFTS_REQUIRED_PRODUCTS']->type
+    || !$checkfields['FREEGIFTS_THRESHOLD_CATEGORIES']->type
+    || !$checkfields['FREEGIFTS_TYPE']->type) {
+  
     if (!$checkfields['FREEGIFTS_ATTRIBUTES']->type) {
         $db->Execute("ALTER TABLE " . TABLE_FREEGIFTS . " ADD COLUMN freegifts_attributes varchar(255) NULL");
     }
@@ -64,11 +68,6 @@ if ($_GET['action'] == 'updateDB') {
     $db->Execute("REPLACE INTO " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, set_function) values ('Sidebox Image Height',                'GIFTS_IMAGE_HEIGHT',           '" . $freegifts_image_height . "', 'The pixel height of heading images', '" . $group_id . "', " . $sort_order++ . ", now(), now(), NULL)");
     $db->Execute("REPLACE INTO " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, set_function) VALUES ('Items to show on the sidebox',                    'FREEGIFTS_SIDEBOX_COUNT',           '" . $FREEGIFTS_SIDEBOX_COUNT . "', 'Set this to the number of items you want to show on the sidebox.', '" . $group_id . "', " . $sort_order++ . ", now(), now(), '')");
     $db->Execute("REPLACE INTO " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, set_function) VALUES ('Remove Free Gift if Coupon is Used',      'FREEGIFTS_REMOVE_GIFTS_IF_COUPON_USED', '" . $freegifts_remove_gifts_if_coupon_used . "', 'If a coupon is used and the order total drop below the required to get the free gift, you can choose to remove the free gift or not.<br /><br />True: Remove product and redirect to Shopping Cart page.<br />False: Ignore the coupon and let the customer checkout.', '" . $group_id . "', " . $sort_order++ . ", now(), now(), 'zen_cfg_select_option(array(\'True\', \'False\'), ')");
-}
-
-$customScriptz->validateLicense();
-if ($_SESSION['validation_error']) {
-    $customScriptz->redirect('action=installModule');
 }
 
 /*************************************/
